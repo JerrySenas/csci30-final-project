@@ -57,7 +57,39 @@ class SeamCarver(Picture):
 
         Milestone 2 (pytest -m m2)
         '''
-        raise NotImplementedError
+        M = [[0] * self.width() for x in range(self.height())]
+        parent = [[0] * self.width() for x in range(self.height())]
+
+        for i in range(self.width()):
+            M[0][i] = self.energy(i, 0)
+
+        for j in range(1, self.height()):
+            for i in range(self.width()):
+                candidates = [(M[j-1][i], i)]
+                if i > 0:
+                    candidates.append((M[j-1][i-1], i-1))
+                if i < self.width()-1:
+                    candidates.append((M[j-1][i+1], i+1))
+                minimum = min(candidates)
+                M[j][i] = self.energy(i, j) + minimum[0]
+                parent[j][i] = minimum[1]
+
+        bottom_row = []
+        for i in range(self.width()):
+            bottom_row.append((M[(self.height()-1)][i], i))
+        minimum = min(bottom_row)
+        end_col = minimum[1]
+
+        seam = [end_col]
+        col = end_col
+
+        for j in range(self.height()-1, 0, -1):
+            col = parent[j][col]
+            seam.append(col)
+
+        seam.reverse()
+
+        return seam
 
     def find_horizontal_seam(self) -> list[int]:
         '''

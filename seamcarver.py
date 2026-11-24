@@ -158,7 +158,7 @@ class SeamCarver(Picture):
             self.remove_vertical_seam(seam)
         except SeamError as e:
             self.transpose()
-            raise SeamError from e
+            raise SeamError from e #PyLint wont shut up if i dont do this grr
 
         self.transpose()
 

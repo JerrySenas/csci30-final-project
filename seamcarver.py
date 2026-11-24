@@ -153,7 +153,14 @@ class SeamCarver(Picture):
 
         Milestone 5 (pytest -m m5)
         '''
-        raise NotImplementedError
+        self.transpose()
+        try:
+            self.remove_vertical_seam(seam)
+        except SeamError as e:
+            self.transpose()
+            raise SeamError from e
+
+        self.transpose()
 
 class SeamError(Exception):
     pass

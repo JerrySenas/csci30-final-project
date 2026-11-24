@@ -37,14 +37,14 @@ class SeamCarver(Picture):
             top_pixel = self[i, j - 1]
 
         delta_x = (
-            (right_pixel[0] - left_pixel[0])**2 + 
-            (right_pixel[1] - left_pixel[1])**2 + 
+            (right_pixel[0] - left_pixel[0])**2 +
+            (right_pixel[1] - left_pixel[1])**2 +
             (right_pixel[2] - left_pixel[2])**2
         )
-        
+
         delta_y = (
-            (bottom_pixel[0] - top_pixel[0])**2 + 
-            (bottom_pixel[1] - top_pixel[1])**2 + 
+            (bottom_pixel[0] - top_pixel[0])**2 +
+            (bottom_pixel[1] - top_pixel[1])**2 +
             (bottom_pixel[2] - top_pixel[2])**2
         )
 
@@ -92,19 +92,15 @@ class SeamCarver(Picture):
         return seam
 
     def transpose(self):
-
-        # transpose picture by swapping its rows and columns
+        '''
+        Transpose the picture by rotating it 90 degrees clockwise.
+        The picture's width will now be the original height and its height its original width.
+        '''
 
         original_width = self._width
         original_height = self._height
-
-        transposed = []
-
-        for j in range(original_height):
-            row = []
-            for i in range(original_width):
-                row.append(self[i, j])
-            transposed.append(row)
+        original_picture = [ [self[i, j] for i in range(self._width)] for j in range(self._height) ]
+        # Note that the list is indexed with [j][i]
 
         self.clear()
 
@@ -113,7 +109,7 @@ class SeamCarver(Picture):
 
         for j in range(self._height):
             for i in range(self._width):
-                self[i, j] = transposed[i][j]
+                self[i, j] = original_picture[i][j]
 
     def find_horizontal_seam(self) -> list[int]:
         '''
@@ -123,11 +119,8 @@ class SeamCarver(Picture):
         Milestone 3 (pytest -m m3)
         '''
         self.transpose()
-
-        try:
-            seam = self.find_vertical_seam()
-        finally:
-            self.transpose()
+        seam = self.find_vertical_seam()
+        self.transpose()
 
         return seam
 

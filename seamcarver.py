@@ -91,6 +91,30 @@ class SeamCarver(Picture):
         seam.reverse()
         return seam
 
+    def transpose(self):
+
+        # transpose picture by swapping its rows and columns
+
+        original_width = self._width
+        original_height = self._height
+
+        transposed = []
+
+        for j in range(original_height):
+            row = []
+            for i in range(original_width):
+                row.append(self[i, j])
+            transposed.append(row)
+
+        self.clear()
+
+        self._width = original_height
+        self._height = original_width
+
+        for j in range(self._height):
+            for i in range(self._width):
+                self[i, j] = transposed[i][j]
+
     def find_horizontal_seam(self) -> list[int]:
         '''
         Return a sequence of indices representing the lowest-energy
@@ -98,7 +122,14 @@ class SeamCarver(Picture):
 
         Milestone 3 (pytest -m m3)
         '''
-        raise NotImplementedError
+        self.transpose()
+
+        try:
+            seam = self.find_vertical_seam()
+        finally:
+            self.transpose()
+
+        return seam
 
     def remove_vertical_seam(self, seam: list[int]):
         '''

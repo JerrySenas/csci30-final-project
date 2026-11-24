@@ -97,9 +97,9 @@ class SeamCarver(Picture):
         The picture's width will now be the original height and its height its original width.
         '''
 
-        original_width = self._width
-        original_height = self._height
-        original_picture = [ [self[i, j] for i in range(self._width)] for j in range(self._height) ]
+        original_width = self.width()
+        original_height = self.height()
+        original_picture = [ [self[i, j] for i in range(self.width())] for j in range(self.height()) ]
         # Note that the list is indexed with [j][i]
 
         self.clear()
@@ -107,8 +107,8 @@ class SeamCarver(Picture):
         self._width = original_height
         self._height = original_width
 
-        for j in range(self._height):
-            for i in range(self._width):
+        for j in range(self.height()):
+            for i in range(self.width()):
                 self[i, j] = original_picture[i][j]
 
     def find_horizontal_seam(self) -> list[int]:
@@ -130,7 +130,22 @@ class SeamCarver(Picture):
 
         Milestone 4 (pytest -m m4)
         '''
-        raise NotImplementedError
+        if self.width() == 1:
+            raise SeamError
+        if len(seam) != self.height():
+            raise SeamError
+        for j, i in enumerate(seam):
+            if i < 0 or i >= self.width():
+                raise SeamError
+            if j != len(seam) - 1 and abs(i - seam[j + 1]) > 1:
+                raise SeamError
+
+        for j, i in enumerate(seam):
+            for i_to_shift in range(i + 1, self.width()):
+                self[i_to_shift - 1, j] = self[i_to_shift, j]
+            del self[self.width() - 1, j]
+
+        self._width -= 1
 
     def remove_horizontal_seam(self, seam: list[int]):
         '''
